@@ -62,7 +62,9 @@ export default {
           })
         })
       })
-      this.$refs.tree.setCheckedKeys(keys)
+      this.$nextTick(() => {
+        this.$refs.tree.setCheckedKeys(keys)
+      })
     },
     async assignRights() {
       let keys1 = this.$refs.tree.getHalfCheckedKeys()

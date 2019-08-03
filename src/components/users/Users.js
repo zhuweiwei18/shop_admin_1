@@ -132,7 +132,7 @@ export default {
     },
     async editUser() {
       let { id, email, mobile } = this.editUserForm
-      let res = await this.$axios.put(`users/${id}`, { email, mobile })
+      await this.$axios.put(`users/${id}`, { email, mobile })
       this.dialogEditUserVisible = false
       this.$message({
         type: 'success',
