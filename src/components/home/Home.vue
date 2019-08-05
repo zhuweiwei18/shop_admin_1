@@ -34,16 +34,24 @@
           text-color="#fff"
           active-text-color="#ffd04b"
         >
-          <el-submenu index="1">
+          <el-submenu
+            :index="item1.id +''"
+            v-for="item1 in menusList"
+            :key="item1.id"
+          >
             <template slot="title">
               <i class="el-icon-location"></i>
-              <span>用户管理</span>
+              <span>{{item1.authName}}</span>
             </template>
-            <el-menu-item index="/users">
-              <span>用户列表</span>
+            <el-menu-item
+              :index="'/' + item2.path"
+              v-for="item2 in item1.children"
+              :key="item2.id"
+            >
+              <span>{{item2.authName}}</span>
             </el-menu-item>
           </el-submenu>
-          <el-submenu index="2">
+          <!-- <el-submenu index="2">
             <template slot="title">
               <i class="el-icon-location"></i>
               <span>权限管理</span>
@@ -54,7 +62,7 @@
             <el-menu-item index="/rights">
               <span slot="title">权限列表</span>
             </el-menu-item>
-          </el-submenu>
+          </el-submenu> -->
         </el-menu>
       </el-aside>
       <el-main>
@@ -66,14 +74,25 @@
 
 <script>
 export default {
+  created () {
+    this.loadMenuData()
+  },
   data () {
     return {
-
+      menusList: []
     }
   },
   methods: {
     getIndex () {
+      if (this.$route.path === '/goods-add') {
+        return '/goods'
+      }
       return this.$route.path
+    },
+    async loadMenuData () {
+      let res = await this.$axios.get('menus')
+      // console.log(res)
+      this.menusList = res.data.data
     },
     async logout () {
       try {

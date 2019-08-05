@@ -1,6 +1,7 @@
 export default {
   created () {
     this.getUserData()
+    this.loadRoleData()
   },
   data () {
     return {
@@ -51,7 +52,14 @@ export default {
             trigger: 'blur'
           }
         ]
-      }
+      },
+      dialogAssignRoleVisible: false,
+      assignRoleForm: {
+        username: '',
+        id: 0,
+        rid: ''
+      },
+      roleData: []
     }
   },
   methods: {
@@ -140,6 +148,31 @@ export default {
         duration: 800
       })
       this.getUserData(this.pagenum)
+    },
+    async loadRoleData() {
+      let res = await this.$axios.get('roles')
+      this.roleData = res.data.data
+    },
+    async showAssignRoleDialog(row) {
+      this.dialogAssignRoleVisible = true
+      const { id, username } = row
+      this.assignRoleForm.id = id
+      this.assignRoleForm.username = username
+      let res = await this.$axios.get(`users/${id}`)
+      this.assignRoleForm.rid = res.data.data.rid == -1 ? '' : res.data.data.rid
+    },
+    async assignRole() {
+      const { id, rid } = this.assignRoleForm
+      let res = await this.$axios.put(`users/${id}/role`, { rid })
+      if (res.data.meta.status === 200) {
+        this.dialogAssignRoleVisible = false
+        this.$message({
+          type: 'success',
+          message: '分配角色成功!',
+          duration: 800
+        })
+        this.getUserData(this.pagenum, this.input3)
+      }
     }
   }
 }
