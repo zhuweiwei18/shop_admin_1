@@ -1,6 +1,7 @@
 export default {
   created () {
-    this.getUserData()
+    let page = this.$route.params.page
+    this.getUserData(page)
     this.loadRoleData()
   },
   data () {
@@ -72,6 +73,7 @@ export default {
       // console.log(res)
     },
     currentChange (curpage) {
+      this.$router.push('/users/' + curpage)
       this.getUserData(curpage, this.input3)
     },
     search () {
